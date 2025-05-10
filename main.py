@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from settings import Settings
 from typing import List
 
-#temp
+from dictionary import dictionary_api
 
 settings = Settings()
 
@@ -36,9 +36,25 @@ bot = Agent(
     model_settings=model_settings,
     system_prompt=prompt,
     deps=Deps(),
+    retries=2,
 )
 
+
+@bot.tool
+async def call_dictionary(ctx : RunContext[Deps], word : str) -> str:
+    """Get the Merriam Webster dictionary meaning of word. Only to be used when especially asked by the user
+
+    Args:
+        ctx: The context.
+        word: word to be searched
+    """
+
+    meaning : str = await dictionary_api(search_word=word)
+    return meaning
+
+
 messages : List[ModelMessage] = []
+
 
 # Terminal Test code
 if __name__ == "__main__":

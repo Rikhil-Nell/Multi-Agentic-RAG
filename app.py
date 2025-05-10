@@ -8,7 +8,6 @@ st.title("Basic Chatbot")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
-    st.session_state
 
 def display_messages():
     for message in st.session_state.messages:
@@ -16,8 +15,8 @@ def display_messages():
             st.write(message["content"])
 
 async def get_bot_response(user_input: str) -> str:
-
-    response = await bot.run(user_prompt=user_input, message_history=messages, deps=Deps)
+    # response = await bot.run(user_prompt=user_input, deps=Deps)
+    response = await bot.run(user_prompt=user_input, deps=Deps, message_history=messages)
     result = response.output
     return result
 
