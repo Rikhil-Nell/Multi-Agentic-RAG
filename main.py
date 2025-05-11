@@ -41,7 +41,7 @@ bot = Agent(
     model=model,
     model_settings=model_settings,
     system_prompt=prompt,
-    deps=Deps(),
+    deps_type=Deps,
     retries=2,
 )
 

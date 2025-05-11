@@ -1,9 +1,21 @@
-import streamlit as st
 import asyncio
-import pdfplumber
+
+import streamlit as st
 from pydantic_ai.messages import ModelRequest, ModelResponse, UserPromptPart, TextPart
+from openai import AsyncOpenAI
+from supabase import create_client, Client
+
 from main import bot, Deps, messages
 from docs import process_and_store_document
+from settings import Settings
+
+# --- SETTINGS & CLIENT INITIALIZATION ---
+settings = Settings()
+
+openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
+supabase: Client = create_client(settings.supabase_url, settings.supabase_key)
+
+deps=Deps(supabase_client=supabase, openai_client=openai_client)
 
 st.set_page_config(page_title="Multi-Agentic RAG", layout="wide")
 
@@ -41,14 +53,14 @@ if selected_page == "About & Uploads":
             st.error("⚠️ Please upload at most 3 PDFs.")
         else:
             for file in uploaded_files:
-                valid_files.append({"file"})
+                valid_files.append(file)
                 st.success(f"✅ '{file.name}' accepted.")
 
         # Store validated files in session state
         st.session_state.uploaded_files = valid_files
 
         for file in valid_files:
-            process_and_store_document(file=file)
+            asyncio.run(process_and_store_document(file=file))
 
     # Footer links
     st.sidebar.markdown("---")
@@ -65,7 +77,7 @@ elif selected_page == "Chat with Bot":
                 st.markdown(message["content"])
 
     async def get_bot_response(user_input: str) -> str:
-        response = await bot.run(user_prompt=user_input, deps=Deps, message_history=messages)
+        response = await bot.run(user_prompt=user_input, deps=deps, message_history=messages)
         return response.output
 
     display_messages()
