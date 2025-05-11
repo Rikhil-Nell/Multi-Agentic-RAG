@@ -9,15 +9,16 @@ import pdfplumber
 from groq import AsyncGroq
 from openai import AsyncOpenAI
 from supabase import create_client, Client
+import streamlit as st
 
 from settings import Settings
 
 # --- SETTINGS & CLIENT INITIALIZATION ---
 settings = Settings()
 
-openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
-groq_client = AsyncGroq(api_key=settings.groq_api_key)
-supabase: Client = create_client(settings.supabase_url, settings.supabase_key)
+openai_client = AsyncOpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+groq_client = AsyncGroq(api_key=st.secrets["GROQ_API_KEY"])
+supabase: Client = create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_KEY"])
 
 # --- DATA STRUCTURES ---
 @dataclass

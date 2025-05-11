@@ -14,8 +14,8 @@ from settings import Settings
 # --- SETTINGS & CLIENT INITIALIZATION ---
 settings = Settings()
 
-openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
-supabase_client: Client = create_client(settings.supabase_url, settings.supabase_key)
+openai_client = AsyncOpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+supabase_client: Client = create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_KEY"])
 
 deps=Deps(supabase_client=supabase_client, openai_client=openai_client)
 

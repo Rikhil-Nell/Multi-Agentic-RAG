@@ -1,5 +1,6 @@
 import requests
 from pydantic import BaseModel
+import streamlit as st
 from typing import List
 
 from settings import Settings
@@ -11,7 +12,7 @@ class Entry(BaseModel):
 
 async def dictionary_api(search_word: str):
     url = f"https://www.dictionaryapi.com/api/v3/references/collegiate/json/{search_word}"
-    response = requests.get(url, params={"key": settings.mw_api_key})
+    response = requests.get(url, params={"key": st.secrets["MW_API_KEY"]})
     
     if response.status_code != 200:
         print(f"❌ Error {response.status_code}: {response.text}")

@@ -24,7 +24,7 @@ model_name : GroqModelName = "llama-3.3-70b-versatile"
 
 model = GroqModel(
     model_name=model_name,
-    provider=GroqProvider(api_key=settings.groq_api_key)
+    provider=GroqProvider(api_key=st.secrets["GROQ_API_KEY"])
 )
 
 model_settings = GroqModelSettings(
@@ -155,8 +155,8 @@ if __name__ == "__main__":
     from TestHarness import TerminalChatTest
     import asyncio
     
-    openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
-    supabase: Client = create_client(settings.supabase_url, settings.supabase_key)
+    openai_client = AsyncOpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+    supabase: Client = create_client(st.secrets["SUPABASE_URL"], st.secrets["SUPABASE_KEY"])
 
     test = TerminalChatTest(agent=bot, deps=Deps(supabase_client=supabase, openai_client=openai_client))
     asyncio.run(test.chat())
