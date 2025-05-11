@@ -3,14 +3,19 @@ from pydantic_ai.models.groq import GroqModel, GroqModelName, GroqModelSettings
 from pydantic_ai.providers.groq import GroqProvider
 from pydantic_ai.messages import ModelMessage
 from pydantic import BaseModel, Field
+from supabase import create_client, Client
+from openai import AsyncOpenAI
 
 from dataclasses import dataclass
-from settings import Settings
-from typing import List
+from typing import List, Any
 
+from settings import Settings
 from dictionary import dictionary_api
 
 settings = Settings()
+
+openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
+supabase: Client = create_client(settings.supabase_url, settings.supabase_key)
 
 model_name : GroqModelName = "llama-3.3-70b-versatile"
 
@@ -26,7 +31,8 @@ model_settings = GroqModelSettings(
 
 @dataclass
 class Deps:
-    pass
+    supabase_client: Client
+    openai_client: AsyncOpenAI
 
 with open("prompt.txt","r") as f:
     prompt = f.read()
@@ -62,6 +68,7 @@ if __name__ == "__main__":
     from TestHarness import TerminalChatTest
     import asyncio
 
-    test = TerminalChatTest(agent=bot, deps=Deps)
+    test = TerminalChatTest(agent=bot, deps=Deps(supabase_client=supabase, openai_client=openai_client))
+    asyncio.run(test.chat())
 
     asyncio.run(test.chat())

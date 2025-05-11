@@ -9,3 +9,7 @@ wheels/
 # Virtual environments
 .venv
 .env
+ref
+lec-07-tree-walks.pdf
+git.pdf
+test.py

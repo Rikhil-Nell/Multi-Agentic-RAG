@@ -9,7 +9,7 @@ class TerminalChatTest:
 
     async def chat(self):
         while True:
-            user_input = input("You: ")
+            user_input = input("\nYou: ")
             response = await self.agent.run(user_prompt=user_input, message_history=self.messages, deps=self.deps)
             self.messages.append(ModelRequest(parts=[UserPromptPart(content=user_input)]))
             self.messages.append(ModelResponse(parts=[TextPart(content=response.output)]))
