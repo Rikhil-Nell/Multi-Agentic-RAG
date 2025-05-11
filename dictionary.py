@@ -21,7 +21,6 @@ async def dictionary_api(search_word: str):
     if isinstance(data, list) and isinstance(data[0], dict):
         entry = Entry(**data[0])
         print(f"Meaning of the word '{search_word}': \n" + ", ".join(entry.shortdef))
-        print("Meaning Recieved")
         return f"Meaning of the word '{search_word}': \n" + ", ".join(entry.shortdef)
     
     elif isinstance(data, list):

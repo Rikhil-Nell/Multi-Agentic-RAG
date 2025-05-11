@@ -1,21 +1,3 @@
-# --- CODE FLOW OVERVIEW ---
-# This script processes documents (initially designed for markdown, with a PDF utility included)
-# by breaking them into manageable chunks and enriching them with AI-generated metadata.
-# The processed chunks, including their content, summaries, titles, and embeddings, are then
-# stored in a Supabase database.
-#
-# The main workflow is orchestrated by `process_and_store_document()`:
-# 1. Document text is split into chunks using `chunk_text()`.
-# 2. For each chunk, `process_chunk()` is called (concurrently):
-#    a. `get_title_and_summary()`: An LLM (Groq Llama 3.3 70B) generates a title and summary.
-#    b. `get_embedding()`: OpenAI's embedding model generates a vector embedding for the chunk's content.
-#    c. A `ProcessedChunk` dataclass instance is created.
-# 3. Each `ProcessedChunk` is then inserted into the Supabase 'documents' table
-#    using `insert_chunk()` (concurrently).
-#
-# Client initializations for OpenAI, Groq, and Supabase are handled globally.
-# Configuration is managed via a `Settings` class (details not shown here but assumed).
-
 # --- IMPORTS ---
 import io
 import asyncio

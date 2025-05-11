@@ -1,6 +1,7 @@
 from pydantic_ai.messages import ModelMessage, ModelRequest, ModelResponse, UserPromptPart, TextPart
 from typing import List
 
+
 class TerminalChatTest:
     def __init__(self, agent, deps):
         self.agent = agent
