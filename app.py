@@ -6,16 +6,18 @@ from openai import AsyncOpenAI
 from supabase import create_client, Client
 
 from main import bot, Deps, messages
-from docs import process_and_store_document
+from docs import process_and_store_document, list_of_documents, reset_documents
+
+import asyncio
 from settings import Settings
 
 # --- SETTINGS & CLIENT INITIALIZATION ---
 settings = Settings()
 
 openai_client = AsyncOpenAI(api_key=settings.openai_api_key)
-supabase: Client = create_client(settings.supabase_url, settings.supabase_key)
+supabase_client: Client = create_client(settings.supabase_url, settings.supabase_key)
 
-deps=Deps(supabase_client=supabase, openai_client=openai_client)
+deps=Deps(supabase_client=supabase_client, openai_client=openai_client)
 
 st.set_page_config(page_title="Multi-Agentic RAG", layout="wide")
 
@@ -43,7 +45,16 @@ if selected_page == "About & Uploads":
     ---
     """)
 
+    # List of files currently vectorized
+    st.markdown("#### 📄 Vectorized Files")
+    current_docs = list_of_documents(supabase_client)
+    if not current_docs:
+        st.warning("No files available.")
+    else:
+        st.markdown("\n".join([f"- `{name}`" for name in current_docs]))
+
     # PDF Upload section
+    st.markdown("\n\n")
     uploaded_files = st.file_uploader("📤 Upload PDF files", type="pdf", accept_multiple_files=True)
 
     # Validation logic
@@ -62,6 +73,13 @@ if selected_page == "About & Uploads":
         for file in valid_files:
             asyncio.run(process_and_store_document(file=file))
 
+    if st.button("❌ Reset Vector Store"):
+        success = reset_documents(supabase_client)
+        if success:
+            st.success("Reset successful!")
+        else:
+            st.error("Failed to reset.")
+    
     # Footer links
     st.sidebar.markdown("---")
     st.sidebar.markdown("Made with ❤️ by [Rikhil Nellimarla](https://github.com/Rikhil-Nell) • [LinkedIn](https://www.linkedin.com/in/rikhil-nellimarla?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BrX3QCeOFSFSz%2BwZHwitRuQ%3D%3D)")

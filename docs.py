@@ -295,6 +295,34 @@ async def process_and_store_document(file: Any) -> None:
 
     print(f"Finished processing and storing document: {filename}")
 
+# --- HELPER FUNCTIONS ---
+
+def list_of_documents(db_client : Client) -> list[str]:
+    """
+    Returns a list of unique file names currently stored in the documents table.
+    """
+    try:
+        response = db_client.table("documents").select("filename").execute()
+        file_names = {doc["filename"] for doc in response.data if doc.get("filename")}
+        print(f"[INFO] Retrieved file names: {file_names}")
+        return sorted(file_names)
+    except Exception as e:
+        print(f"[ERROR] Failed to fetch file names: {e}")
+        return []
+    
+def reset_documents(db_client:Client) -> bool:
+    """
+    Deletes all documents from the `documents` table.
+    """
+    try:
+        db_client.table("documents").delete().neq("id", 0).execute()
+        print("[INFO] All documents deleted successfully.")
+        return True
+    except Exception as e:
+        print(f"[ERROR] Failed to reset documents: {e}")
+        return False
+
+
 if __name__ == "__main__":
     res = asyncio.run(get_embedding("hello"))
     print(res[:10])
