@@ -1,6 +1,8 @@
 from pydantic_ai import Agent, RunContext
-from pydantic_ai.models.groq import GroqModel, GroqModelName, GroqModelSettings
-from pydantic_ai.providers.groq import GroqProvider
+from pydantic_ai.models.openai import OpenAIModel, OpenAIModelName, OpenAIModelSettings
+from pydantic_ai.providers.openai import OpenAIProvider
+# from pydantic_ai.models.groq import GroqModel, GroqModelName, GroqModelSettings
+# from pydantic_ai.providers.groq import GroqProvider
 from pydantic_ai.messages import ModelMessage
 from pydantic import BaseModel, Field
 from supabase import create_client, Client
@@ -20,14 +22,26 @@ settings = Settings()
 
 console = Console()
 
-model_name : GroqModelName = "llama-3.3-70b-versatile"
+# model_name : GroqModelName = "llama-3.3-70b-versatile"
 
-model = GroqModel(
+# model = GroqModel(
+#     model_name=model_name,
+#     provider=GroqProvider(api_key=settings.groq_api_key)
+# )
+
+# model_settings = GroqModelSettings(
+#     temperature=0.8,
+#     top_p=1
+# )
+
+model_name : OpenAIModelName = "gpt-4.1-mini"
+
+model = OpenAIModel(
     model_name=model_name,
-    provider=GroqProvider(api_key=settings.groq_api_key)
+    provider=OpenAIProvider(api_key=settings.openai_api_key)
 )
 
-model_settings = GroqModelSettings(
+model_settings = OpenAIModelSettings(
     temperature=0.8,
     top_p=1
 )

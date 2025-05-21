@@ -49,7 +49,7 @@ if selected_page == "About & Uploads":
     st.markdown("#### 📄 Vectorized Files")
     current_docs = list_of_documents(supabase_client)
     if not current_docs:
-        st.warning("No files available.")
+        st.warning("Please Upload PDF files")
     else:
         st.markdown("\n".join([f"- `{name}`" for name in current_docs]))
 
